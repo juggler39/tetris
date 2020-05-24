@@ -46,7 +46,7 @@ window.addEventListener('DOMContentLoaded', () => {
         [width, width + 1, width + 2, width + 3],
         [1, width + 1, width * 2 + 1, width * 3 + 1],
         [width, width + 1, width + 2, width + 3]
-    ]
+    ];
     const tetrominoes=[lTetromino, zTetromino, sTetromino, tTetromino, oTetromino, iTetromino];
 
     //field initialisation
@@ -64,9 +64,33 @@ window.addEventListener('DOMContentLoaded', () => {
     let currentRotation = 0;
     let current=tetrominoes[random()][0];
 
-    function control (e) {
+    window.addEventListener("keydown", function(event) {
+        if (event.defaultPrevented) {
+            return; // Do nothing if event already handled
+        }
 
-    }
+        switch(event.code) {
+            case "KeyS":
+            case "ArrowDown":
+                break;
+            case "KeyW":
+            case "ArrowUp":
+                break;
+            case "KeyA":
+            case "ArrowLeft":
+                moveLeft();
+                break;
+            case "KeyD":
+            case "ArrowRight":
+
+                break;
+        }
+
+        refresh();
+
+        // Consume the event so it doesn't get handled twice
+        event.preventDefault();
+    }, true);
 
     function random() {
         return Math.floor(Math.random()*tetrominoes.length);
@@ -89,7 +113,6 @@ window.addEventListener('DOMContentLoaded', () => {
         currentPosition += width;
         draw();
         freeze();
-        moveLeft();
     }
 
     function freeze() {
@@ -103,7 +126,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function moveLeft() {
         erase();
-        const isAtLeftEdge=current.some(index => (currentPosition+index)/width===0);
+        const isAtLeftEdge=current.some(index => (currentPosition+index)%width===0);
         if (!isAtLeftEdge) currentPosition -=1;
         if (current.some(index => squares[currentPosition+index].classList.contains('taken'))) currentPosition +=1;
         draw();
