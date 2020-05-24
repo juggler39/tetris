@@ -1,55 +1,150 @@
 window.addEventListener('DOMContentLoaded', () => {
-    const fieldSize=200;
+
+    const width=10;
+    const height=20;
+    const fieldSize=width*height;
     const field = document.getElementById('field');
     const scoreDisplay = document.getElementById('score');
-    const startBtn = document.getElementById('start-button')
+    const startBtn = document.getElementById('start-button');
 
-    const WIDTH=10;
+    
     //Terominoes
 
     const lTetromino = [
-        [1, WIDTH + 1, WIDTH * 2 + 1, 2],
-        [WIDTH, WIDTH + 1, WIDTH + 2, WIDTH * 2 + 2],
-        [1, WIDTH + 1, WIDTH * 2 + 1, WIDTH * 2],
-        [WIDTH, WIDTH * 2, WIDTH * 2 + 1, WIDTH * 2 + 2]
-    ]
+        [1, width + 1, width * 2 + 1, 2],
+        [width, width + 1, width + 2, width * 2 + 2],
+        [1, width + 1, width * 2 + 1, width * 2],
+        [width, width * 2, width * 2 + 1, width * 2 + 2]
+    ];
     const zTetromino = [
-        [0, WIDTH, WIDTH + 1, WIDTH * 2 + 1],
-        [WIDTH + 1, WIDTH + 2, WIDTH * 2, WIDTH * 2 + 1],
-        [0, WIDTH, WIDTH + 1, WIDTH * 2 + 1],
-        [WIDTH + 1, WIDTH + 2, WIDTH * 2, WIDTH * 2 + 1]
-    ]
+        [0, width, width + 1, width * 2 + 1],
+        [width + 1, width + 2, width * 2, width * 2 + 1],
+        [0, width, width + 1, width * 2 + 1],
+        [width + 1, width + 2, width * 2, width * 2 + 1]
+    ];
     const sTetromino = [
-        [WIDTH + 1, WIDTH * 2 + 1, 0, WIDTH],
-        [WIDTH * 2, WIDTH * 2 + 1, WIDTH + 1, WIDTH + 2],
-        [WIDTH + 1, WIDTH * 2 + 1, 0, WIDTH],
-        [WIDTH * 2, WIDTH * 2 + 1, WIDTH + 1, WIDTH + 2]
-    ]
+        [width + 1, width * 2 + 1, 0, width],
+        [width * 2, width * 2 + 1, width + 1, width + 2],
+        [width + 1, width * 2 + 1, 0, width],
+        [width * 2, width * 2 + 1, width + 1, width + 2]
+    ];
     const tTetromino = [
-        [1, WIDTH, WIDTH + 1, WIDTH + 2],
-        [1, WIDTH + 1, WIDTH + 2, WIDTH * 2 + 1],
-        [WIDTH, WIDTH + 1, WIDTH + 2, WIDTH * 2 + 1],
-        [1, WIDTH, WIDTH + 1, WIDTH * 2 + 1]
-    ]
+        [1, width, width + 1, width + 2],
+        [1, width + 1, width + 2, width * 2 + 1],
+        [width, width + 1, width + 2, width * 2 + 1],
+        [1, width, width + 1, width * 2 + 1]
+    ];
     const oTetromino = [
-        [0, 1, WIDTH, WIDTH + 1],
-        [0, 1, WIDTH, WIDTH + 1],
-        [0, 1, WIDTH, WIDTH + 1],
-        [0, 1, WIDTH, WIDTH + 1]
-    ]
+        [0, 1, width, width + 1],
+        [0, 1, width, width + 1],
+        [0, 1, width, width + 1],
+        [0, 1, width, width + 1]
+    ];
 
     const iTetromino = [
-        [1, WIDTH + 1, WIDTH * 2 + 1, WIDTH * 3 + 1],
-        [WIDTH, WIDTH + 1, WIDTH + 2, WIDTH + 3],
-        [1, WIDTH + 1, WIDTH * 2 + 1, WIDTH * 3 + 1],
-        [WIDTH, WIDTH + 1, WIDTH + 2, WIDTH + 3]
+        [1, width + 1, width * 2 + 1, width * 3 + 1],
+        [width, width + 1, width + 2, width + 3],
+        [1, width + 1, width * 2 + 1, width * 3 + 1],
+        [width, width + 1, width + 2, width + 3]
     ]
-
+    const tetrominoes=[lTetromino, zTetromino, sTetromino, tTetromino, oTetromino, iTetromino];
 
     //field initialisation
     for (let i = 0; i<fieldSize; i++) {
         document.getElementById('field').appendChild(document.createElement('div'));
     }
+    for (let i = 0; i<width; i++) {
+        let El=document.createElement('div');
+        El.classList.add('taken');
+        document.getElementById('field').appendChild(El);
+    }
     let squares = Array.from(document.querySelectorAll('.field div'));
-    console.log (squares);
+
+    let currentPosition = 4;
+    let currentRotation = 0;
+    let current=tetrominoes[random()][0];
+
+    function control (e) {
+
+    }
+
+    function random() {
+        return Math.floor(Math.random()*tetrominoes.length);
+    }
+
+    function draw() {
+        current.forEach(index=>{
+            squares[currentPosition+index].classList.add('tetromino');
+        })
+    }
+
+    function erase() {
+        current.forEach(index=>{
+            squares[currentPosition+index].classList.remove('tetromino');
+        })
+    }
+
+    function moveDown() {
+        erase();
+        currentPosition += width;
+        draw();
+        freeze();
+        moveLeft();
+    }
+
+    function freeze() {
+        if (current.some(index => squares[currentPosition+index+width].classList.contains('taken'))) {
+            current.forEach(index => squares[currentPosition+index].classList.add('taken'));
+            current=tetrominoes[random()][currentRotation];
+            currentPosition=4;
+            draw();
+        }
+    }
+
+    function moveLeft() {
+        erase();
+        const isAtLeftEdge=current.some(index => (currentPosition+index)/width===0);
+        if (!isAtLeftEdge) currentPosition -=1;
+        if (current.some(index => squares[currentPosition+index].classList.contains('taken'))) currentPosition +=1;
+        draw();
+    }
+
+
+    //move down
+    draw();
+    let timerId=setInterval(moveDown, 500);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 });
