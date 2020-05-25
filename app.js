@@ -62,7 +62,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
     let currentPosition = 4;
     let currentRotation = 0;
-    let current=tetrominoes[random()][0];
+    let random = randomize(); //от этой переменной надо избавиться
+    let current=tetrominoes[random][0];
 
     window.addEventListener("keydown", function(event) {
         if (event.defaultPrevented) {
@@ -75,6 +76,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 break;
             case "KeyW":
             case "ArrowUp":
+                rotate();
                 break;
             case "KeyA":
             case "ArrowLeft":
@@ -82,17 +84,16 @@ window.addEventListener('DOMContentLoaded', () => {
                 break;
             case "KeyD":
             case "ArrowRight":
-
+                moveRight()
                 break;
         }
 
-        refresh();
 
         // Consume the event so it doesn't get handled twice
         event.preventDefault();
     }, true);
 
-    function random() {
+    function randomize() {
         return Math.floor(Math.random()*tetrominoes.length);
     }
 
@@ -114,11 +115,11 @@ window.addEventListener('DOMContentLoaded', () => {
         draw();
         freeze();
     }
-
+    random=randomize();
     function freeze() {
         if (current.some(index => squares[currentPosition+index+width].classList.contains('taken'))) {
             current.forEach(index => squares[currentPosition+index].classList.add('taken'));
-            current=tetrominoes[random()][currentRotation];
+            current=tetrominoes[random][0];
             currentPosition=4;
             draw();
         }
@@ -130,6 +131,22 @@ window.addEventListener('DOMContentLoaded', () => {
         if (!isAtLeftEdge) currentPosition -=1;
         if (current.some(index => squares[currentPosition+index].classList.contains('taken'))) currentPosition +=1;
         draw();
+    }
+
+    function moveRight() {
+        erase();
+        const isAtRightEdge=current.some(index => (currentPosition+index)%width===width-1);
+        if (!isAtRightEdge) currentPosition +=1;
+        if (current.some(index => squares[currentPosition+index].classList.contains('taken'))) currentPosition -=1;
+        draw();
+    }
+
+    function rotate() {
+        erase();
+        currentRotation++;
+        if (currentRotation==4) currentRotation=0;
+        current = tetrominoes[random][currentRotation];
+        draw;
     }
 
 
