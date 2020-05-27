@@ -4,22 +4,24 @@
 
 .grid {
     display: grid;
-    grid-template-columns: 400px 200px;
-    grid-column-gap: 20px;
+    grid-template-columns: 40vmin 20vmin;
+    grid-column-gap: 2vmin;
     justify-content: center;
 }
 
 .field {
-    width: 400px;
-    height: 800px;
+    width: 40vmin;
+    height: 80vmin;
     background-color: aquamarine;
     display: flex;
     flex-wrap: wrap;
 }
 .field div {
-    width: 20px;
-    height: 20px;
-
+    width: 4vmin;
+    height: 4vmin;
+    background-color: red;
+    outline: aqua;
+    outline-style: dashed;
 }
 
 .right-column {
@@ -34,5 +36,3 @@
     padding: 15px 30px;
     cursor: pointer;
 }
-
-
