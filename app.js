@@ -21,8 +21,7 @@ window.addEventListener('DOMContentLoaded', () => {
     field.clearField();
 
     function play() {
-        field.reset();
-        console.table(field.grid);
+        field.clearField();
     }
 
 });
