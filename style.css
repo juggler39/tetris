@@ -19,9 +19,12 @@
 .field div {
     width: 4vmin;
     height: 4vmin;
-    background-color: red;
     outline: aqua;
     outline-style: dashed;
+}
+
+.colorblue {
+    background-color: blue;
 }
 
 .right-column {
