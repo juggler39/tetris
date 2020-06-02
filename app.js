@@ -39,6 +39,7 @@ class Field {
             for (let x = 0; x < COLS; x++) {
                 let cell = document.createElement('div');
                 cell.setAttribute("id", `x${x}y${y}`);
+                cell.setAttribute("class", `empty`);
                 document.getElementById('field').appendChild(cell);
             }
         }
@@ -68,7 +69,7 @@ class Tetromino {
         this.y = 0;
     }
     randomize() {
-        return Math.floor(Math.random() * TETROMINO.length + 1);
+        return Math.floor(Math.random() * (TETROMINO.length + 1));
     }
 
     draw() {
@@ -81,6 +82,30 @@ class Tetromino {
             });
         });
     }
+
+    erase() {
+        this.shape.forEach((row, y) => {
+            row.forEach((value, x) => {
+                if (value > 0) {
+                    document.getElementById(`x${this.x + x}y${this.y + y}`)
+                        .setAttribute("class", `empty`);
+                }
+            });
+        });
+
+    }
+
+    moveLeft () {
+        this.erase();
+        this.x=this.x-1;
+        this.draw();
+    }
+
+    moveRight () {
+        this.erase();
+        this.x=this.x+1;
+        this.draw();
+    }
 }
 
 
@@ -90,36 +115,36 @@ window.addEventListener("keydown", function(event) {
     }
 
     switch(event.code) {
-        case "KeyS":
-        case "ArrowDown":
-            alert("ArrowDown");
-            break;
+
         case "KeyW":
         case "ArrowUp":
             alert("ArrowUp");
             break;
         case "KeyA":
         case "ArrowLeft":
-            alert("ArrowLeft");
+            tetromino.moveLeft ();
             break;
         case "KeyD":
         case "ArrowRight":
-            alert("ArrowRight");
+            tetromino.moveRight ();
+            break;
+        case "KeyS":
+        case "ArrowDown":
+            alert("ArrowDown");
             break;
     }
 
-    // Consume the event so it doesn't get handled twice
     event.preventDefault();
 }, true);
 
-    let field = new Field();
-    let tetromino = new Tetromino();
-    console.log(this);
+let field = new Field();
+let tetromino = new Tetromino();
 
-    function play() {
-        field.clearField();
-        tetromino.draw();
-        console.table(field.clearField());
 
-    }
+function play() {
+    field.clearField();
+    tetromino.draw();
+    console.table(field.clearField());
+
+}
 
