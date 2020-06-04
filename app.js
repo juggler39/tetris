@@ -34,19 +34,26 @@ const TETROMINO = [
 
 class Field {
 
+    arrField;
+
     constructor() {
         for (let y = 0; y < ROWS; y++) {
             for (let x = 0; x < COLS; x++) {
                 let cell = document.createElement('div');
                 cell.setAttribute("id", `x${x}y${y}`);
-                cell.setAttribute("class", `empty`);
+                cell.setAttribute("class", `cell empty`);
                 document.getElementById('field').appendChild(cell);
             }
         }
+        this.arrField = Array.from({length: ROWS}, () => Array(COLS).fill(0));
     }
 
     clearField() {
-        return Array.from({length: ROWS}, () => Array(COLS).fill(0));
+        let cells=document.getElementsByClassName('cell');
+        for (let i = 0; i<cells.length; i++) {
+            cells[i].setAttribute ("class", `cell empty`);
+        }
+         this.arrField = Array.from({length: ROWS}, () => Array(COLS).fill(0));
     }
 }
 
@@ -69,7 +76,7 @@ class Tetromino {
         this.y = 0;
     }
     randomize() {
-        return Math.floor(Math.random() * (TETROMINO.length + 1));
+        return Math.floor(Math.random() * (TETROMINO.length));
     }
 
     draw() {
@@ -77,7 +84,7 @@ class Tetromino {
             row.forEach((value, x) => {
                 if (value > 0) {
                     document.getElementById(`x${this.x + x}y${this.y + y}`)
-                        .setAttribute("class", `color${this.color}`);
+                        .setAttribute("class", `cell color${this.color}`);
                 }
             });
         });
@@ -106,6 +113,11 @@ class Tetromino {
         this.x=this.x+1;
         this.draw();
     }
+    canMove () {
+
+
+    }
+
 }
 
 
@@ -143,8 +155,8 @@ let tetromino = new Tetromino();
 
 function play() {
     field.clearField();
+    tetromino.spawn();
     tetromino.draw();
-    console.table(field.clearField());
 
 }
 
