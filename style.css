@@ -23,10 +23,28 @@
 .empty {
     background-color: aquamarine;
 }
-
+.colorcyan {
+    background-color: cyan;
+}
 .colorblue {
     background-color: blue;
 }
+.colororange {
+    background-color: orange;
+}
+.coloryellow {
+    background-color: yellow;
+}
+.colorgreen {
+    background-color: green;
+}
+.colorpurple {
+    background-color: purple;
+}
+.colorred {
+    background-color: red;
+}
+
 
 .right-column {
     display: flex;
