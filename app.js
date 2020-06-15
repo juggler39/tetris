@@ -82,6 +82,7 @@ class Field {
     }
 
     startGame() {
+       // this.clearField();
         this.tetromino=new Tetromino();
         this.tetromino.spawn();
         this.tetromino.draw();
@@ -92,7 +93,19 @@ class Field {
             this.tetromino.erase();
             this.tetromino.y=this.tetromino.y+1;
             this.tetromino.draw();
-        };
+        } else {
+            this.freeze ();
+        }
+    }
+    freeze () {
+        for (let y = 0; y < this.tetromino.shape.length; y++) {
+            for (let x = 0; x < this.tetromino.shape[y].length; x++) {
+                if (this.tetromino.shape[y][x]!==0) {
+                    this.arrField[y+this.tetromino.y][x+this.tetromino.x]=this.tetromino.shape[y][x];
+                }
+            }
+        }
+
     }
 
     moveLeft () {
@@ -100,7 +113,7 @@ class Field {
             this.tetromino.erase();
             this.tetromino.x=this.tetromino.x-1;
             this.tetromino.draw();
-        };
+        }
     }
 
     moveRight () {
@@ -108,7 +121,7 @@ class Field {
             this.tetromino.erase();
             this.tetromino.x=this.tetromino.x+1;
             this.tetromino.draw();
-        };
+        }
     }
 
     rotateClockwise () {
@@ -234,44 +247,40 @@ class Tetromino {
 }
 
 window.addEventListener("keydown", function(event) {
-
-
     switch(event.code) {
         case "KeyW":
         case "ArrowUp":
-
+            field.rotateClockwise ();
             break;
         case "KeyZ":
         case "ControlLeft":
         case "ControlRight":
-
+            field.rotateCounterClockwise ();
             break;
         case "KeyA":
         case "ArrowLeft":
-
+            field.moveLeft ();
             break;
         case "KeyD":
         case "ArrowRight":
-
+            field.moveRight ();
             break;
         case "KeyS":
         case "ArrowDown":
             field.moveDown ();
             break;
    }
-   let key = event.code;
-   if ((key==="KeyW")||(key==="ArrowUp")) field.rotateClockwise ();
-   if (key==="KeyZ"||key==="ControlLeft"||key==="ControlRight") field.rotateCounterClockwise ();
-   if (key==="KeyD"||key==="ArrowRight") field.moveRight ();
-   if (key==="KeyA"||key==="ArrowLeft") field.moveLeft ();
-
 
 }, true);
+
+
+/*window.onkeydown = window.onkeyup = function(e){
+    keymap[e.code] = e.type === 'keydown';
+};*/
 
 let field = new Field();
 
 function play() {
-    field.clearField();
     field.startGame();
 
 
