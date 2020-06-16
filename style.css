@@ -20,6 +20,18 @@
     height: 4vmin;
 }
 
+.next {
+    width: 16vmin;
+    height: 16vmin;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.next div {
+    width: 4vmin;
+    height: 4vmin;
+}
+
 .empty {
     background-color: lightslategray;
 }

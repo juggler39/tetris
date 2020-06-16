@@ -58,6 +58,7 @@ class Field {
 
     arrField;
     tetromino;
+    next;
 
     constructor() {
         for (let y = 0; y < GAMEDATA.rows; y++) {
@@ -69,6 +70,14 @@ class Field {
             }
         }
         this.arrField = Array.from({length: GAMEDATA.rows}, () => Array(GAMEDATA.cols).fill(0));
+        for (let y = 0; y < 4; y++) {
+            for (let x = 0; x < 4; x++) {
+                let cell = document.createElement('div');
+                cell.setAttribute("id", `nextx${x}y${y}`);
+                cell.setAttribute("class", `cellnext nextempty`);
+                document.getElementById('next').appendChild(cell);
+            }
+        }
     }
 
     clearField() {
@@ -95,6 +104,11 @@ class Field {
     startGame() {
         this.clearField();
         this.tetromino=new Tetromino();
+        this.tetromino.spawn();
+        this.tetromino.draw();
+        this.next=new Tetromino;
+        this.next.spawn();
+        this.next.nextDraw();
     }
 
     clearRows () {
@@ -144,8 +158,6 @@ class Tetromino {
     rotation;
 
     constructor() {
-        this.spawn();
-        this.draw();
         this.rotation=0;
     }
 
@@ -182,6 +194,21 @@ class Tetromino {
         });
     }
 
+    nextDraw() {
+        let cells=document.getElementsByClassName('cellnext');
+        for (let i = 0; i < cells.length; i++) {
+            cells[i].setAttribute("class", `cellnext nextempty`);
+        }
+        this.shape.forEach((row, y) => {
+            row.forEach((value, x) => {
+                 if (value > 0) {
+                    document.getElementById(`nextx${x}y${y}`)
+                        .setAttribute("class", `cellnext color${GAMEDATA.colors[this.piece]}`);
+                }
+            });
+        });
+    }
+
     moveDown () {
         if (field.canMove (this.shape, this.x, this.y+1)) {
             this.erase();
@@ -189,8 +216,12 @@ class Tetromino {
             this.draw();
         } else {
             field.freeze ();
-            field.tetromino=new Tetromino();
             field.clearRows ();
+            field.tetromino=field.next;
+            field.tetromino.draw();
+            field.next=new Tetromino();
+            field.next.spawn();
+            field.next.nextDraw();
         }
     }
 
@@ -304,6 +335,4 @@ let field = new Field();
 
 function playTetris() {
     field.startGame();
-
-
 }
