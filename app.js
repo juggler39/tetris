@@ -299,7 +299,10 @@ class Tetromino {
     }
 }
 
+const pressedKeys = {};
+
 window.addEventListener("keydown", function(event) {
+    pressedKeys[event.code] = event.type === 'keydown';
     if (event.defaultPrevented) {
         return; // Do nothing if event already handled
     }
@@ -330,9 +333,26 @@ window.addEventListener("keydown", function(event) {
     event.preventDefault();
 }, true);
 
+document.addEventListener("keyup", (event) => {
+    pressedKeys[event.code] = event.type === 'keydown';
+});
+
 
 let field = new Field();
+time = { start: 0, elapsed: 0, level: 500 };
 
 function playTetris() {
     field.startGame();
+    window.main = function (now= 0) {
+        window.requestAnimationFrame( main );
+        time.elapsed = now - time.start;
+
+        if (time.elapsed > time.level) {
+            time.start = now;
+            field.tetromino.moveDown ();
+        }
+
+    };
+
+    main(); // Start the cycle
 }
