@@ -59,7 +59,7 @@ class Field {
     arrField;
     tetromino;
     next;
-
+    pressedKeys = {};
     constructor() {
         for (let y = 0; y < GAMEDATA.rows; y++) {
             for (let x = 0; x < GAMEDATA.cols; x++) {
@@ -135,7 +135,7 @@ class Field {
         return shape.every ((row, dy) => {
             return row.every ((square, dx) => {
                 return square === 0 || (this.insideWalls(x+dx)&&
-                    this.aboveFloor(y+dy)&&this.notOccupied(x+dx, y+dy)); //надо переделать
+                    this.aboveFloor(y+dy)&&this.notOccupied(x+dx, y+dy));
             });
         });
     };
@@ -215,6 +215,7 @@ class Tetromino {
             this.y=this.y+1;
             this.draw();
         } else {
+            if (this.y===0) return false;
             field.freeze ();
             field.clearRows ();
             field.tetromino=field.next;
@@ -299,10 +300,11 @@ class Tetromino {
     }
 }
 
-const pressedKeys = {};
+
+let field = new Field();
 
 window.addEventListener("keydown", function(event) {
-    pressedKeys[event.code] = event.type === 'keydown';
+    field.pressedKeys[event.code] = event.type === 'keydown';
     if (event.defaultPrevented) {
         return; // Do nothing if event already handled
     }
@@ -326,7 +328,7 @@ window.addEventListener("keydown", function(event) {
             break;
         case "KeyS":
         case "ArrowDown":
-            field.tetromino.moveDown ();
+            //field.tetromino.moveDown ();
             break;
    }
     // Consume the event so it doesn't get handled twice
@@ -334,11 +336,9 @@ window.addEventListener("keydown", function(event) {
 }, true);
 
 document.addEventListener("keyup", (event) => {
-    pressedKeys[event.code] = event.type === 'keydown';
+    field.pressedKeys[event.code] = event.type === 'keydown';
 });
 
-
-let field = new Field();
 time = { start: 0, elapsed: 0, level: 500 };
 
 function playTetris() {
@@ -346,13 +346,19 @@ function playTetris() {
     window.main = function (now= 0) {
         window.requestAnimationFrame( main );
         time.elapsed = now - time.start;
-
+        if (field.pressedKeys["ArrowDown"]||field.pressedKeys["KeyS"]) time.elapsed+=time.level;
         if (time.elapsed > time.level) {
             time.start = now;
-            field.tetromino.moveDown ();
+            if (field.tetromino.moveDown ()===false) gameOver ();
         }
 
     };
 
     main(); // Start the cycle
+}
+
+function gameOver () {
+    confirm ('Game over!');
+
+
 }
