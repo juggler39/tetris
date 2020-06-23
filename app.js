@@ -413,4 +413,3 @@ function continueGame () {
     document.getElementById('play-button').innerText='Pause';
     document.getElementById('play-button').setAttribute( "onClick", "pauseGame();" );
 }
-
