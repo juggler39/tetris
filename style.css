@@ -64,9 +64,23 @@
     justify-content: space-between;
 }
 
-.play-button {
+#play-button {
     background-color: #4caf50;
     font-size: 1.6vmin;
     padding: 1.5vmin 3vmin;
     cursor: pointer;
+}
+
+#pause {
+    display: none;
+    position: absolute;
+    width: 40vmin;
+    top: 30vmin;
+    right: 20vmin;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    font-size: 6vmin;
+    z-index: 1;
+    text-align: center;
 }

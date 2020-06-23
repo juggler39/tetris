@@ -1,3 +1,4 @@
+'use strict';
 const GAMEDATA = {
 cols: 10,
 rows: 20,
@@ -60,6 +61,7 @@ class Field {
     tetromino;
     next;
     pressedKeys = {};
+    gamePaused=false;
     constructor() {
         for (let y = 0; y < GAMEDATA.rows; y++) {
             for (let x = 0; x < GAMEDATA.cols; x++) {
@@ -102,6 +104,10 @@ class Field {
     }
 
     startGame() {
+        document.getElementById('pause').style.display='none';
+        document.getElementById('play-button').innerText='Pause';
+        document.getElementById('play-button').setAttribute( "onClick", "pauseGame();" );
+        addEventListeners();
         this.clearField();
         this.tetromino=new Tetromino();
         this.tetromino.spawn();
@@ -109,6 +115,15 @@ class Field {
         this.next=new Tetromino;
         this.next.spawn();
         this.next.nextDraw();
+    }
+
+    gameOver () {
+        document.getElementById('pause').innerText='Game over';
+        document.getElementById('pause').style.display='block';
+        document.getElementById('play-button').innerText='Play';
+        document.getElementById('play-button').setAttribute( "onClick", "playTetris();" );
+        window.removeEventListener ("keydown", addKeys, true);
+        cancelAnimationFrame(requestId);
     }
 
     clearRows () {
@@ -302,8 +317,14 @@ class Tetromino {
 
 
 let field = new Field();
+function addEventListeners () {
+    window.addEventListener ("keydown", addKeys, true);
+    window.addEventListener("keyup", (event) => {
+        field.pressedKeys[event.code] = event.type === 'keydown';
+    });
+}
 
-window.addEventListener("keydown", function(event) {
+function addKeys(event) {
     field.pressedKeys[event.code] = event.type === 'keydown';
     if (event.defaultPrevented) {
         return; // Do nothing if event already handled
@@ -311,54 +332,64 @@ window.addEventListener("keydown", function(event) {
     switch(event.code) {
         case "KeyW":
         case "ArrowUp":
-            field.tetromino.rotateClockwise ();
+            if (!field.gamePaused) field.tetromino.rotateClockwise ();
             break;
         case "KeyZ":
         case "ControlLeft":
         case "ControlRight":
-            field.tetromino.rotateCounterClockwise ();
+            if (!field.gamePaused) field.tetromino.rotateCounterClockwise ();
             break;
         case "KeyA":
         case "ArrowLeft":
-            field.tetromino.moveLeft ();
+            if (!field.gamePaused) field.tetromino.moveLeft ();
             break;
         case "KeyD":
         case "ArrowRight":
-            field.tetromino.moveRight ();
+            if (!field.gamePaused) field.tetromino.moveRight ();
             break;
-        case "KeyS":
-        case "ArrowDown":
-            //field.tetromino.moveDown ();
+        case "Escape":
+        case "F1":
+            if (field.gamePaused) {
+                continueGame();
+            } else {
+                pauseGame();
+            }
             break;
-   }
+    }
     // Consume the event so it doesn't get handled twice
     event.preventDefault();
-}, true);
+}
 
-document.addEventListener("keyup", (event) => {
-    field.pressedKeys[event.code] = event.type === 'keydown';
-});
-
-time = { start: 0, elapsed: 0, level: 500 };
-
+const time = { start: 0, elapsed: 0, level: 500 };
+let requestId=0;
 function playTetris() {
     field.startGame();
     window.main = function (now= 0) {
-        window.requestAnimationFrame( main );
+        requestId = window.requestAnimationFrame( main );
         time.elapsed = now - time.start;
         if (field.pressedKeys["ArrowDown"]||field.pressedKeys["KeyS"]) time.elapsed+=time.level;
         if (time.elapsed > time.level) {
             time.start = now;
-            if (field.tetromino.moveDown ()===false) gameOver ();
+            if (field.tetromino.moveDown ()===false) field.gameOver ();
         }
-
     };
-
     main(); // Start the cycle
 }
 
-function gameOver () {
-    confirm ('Game over!');
-
-
+function pauseGame () {
+    field.gamePaused=true;
+    document.getElementById('pause').style.display='block';
+    document.getElementById('pause').innerText='Game paused';
+    document.getElementById('play-button').innerText='Play';
+    document.getElementById('play-button').setAttribute( "onClick", "continueGame();" );
+    cancelAnimationFrame(requestId);
 }
+
+function continueGame () {
+    field.gamePaused=false;
+    requestId = window.requestAnimationFrame( main );
+    document.getElementById('pause').style.display='none';
+    document.getElementById('play-button').innerText='Pause';
+    document.getElementById('play-button').setAttribute( "onClick", "pauseGame();" );
+}
+

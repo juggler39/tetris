@@ -10,19 +10,21 @@
 <body>
 
 <div class="grid">
-    <div class="field" id="field"></div>
-    <div class="right-column">
-      <div>
-        <h1>TETRIS</h1>
-        <p>Score: <span id="score">0</span></p>
-        <p>Lines: <span id="lines">0</span></p>
-        <p>Level: <span id="level">0</span></p>
-        <h2>NEXT</h2>
-        <div class="next" id="next"></div>
-      </div>
-      <button onclick="playTetris()" class="play-button">Play</button>
+  <div class="field" id="field"></div>
+  <div class="right-column">
+    <div>
+      <h1>TETRIS</h1>
+      <p>Score: <span id="score">0</span></p>
+      <p>Lines: <span id="lines">0</span></p>
+      <p>Level: <span id="level">0</span></p>
+      <h2>NEXT</h2>
+      <div class="next" id="next"></div>
     </div>
+    <button onclick="playTetris()" id="play-button">Play</button>
+  </div>
 </div>
+
+<div id="pause">Game paused</div>
 
 </body>
 </html>
