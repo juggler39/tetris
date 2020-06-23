@@ -52,7 +52,16 @@ kickDataI: [
     [[0, 0], [-1, 0], [2, 0], [-1, 2], [2, -1]],
     [[0, 0], [2, 0], [-1, 0], [2, 1], [-1, -2]],
     [[0, 0], [1, 0], [-2, 0], [1, -2], [-2, 1]],
-    [[0, 0], [-2, 0], [1, 0], [-2, -1], [1, 2]]],
+    [[0, 0], [-2, 0], [1, 0], [-2, -1], [1, 2]]]
+};
+
+const points = {
+    single: 100,
+    double: 300,
+    triple: 500,
+    tetris: 800,
+    softDrop: 1,
+    hardDrop: 2
 };
 
 class Field {
@@ -238,6 +247,7 @@ class Tetromino {
             field.next=new Tetromino();
             field.next.spawn();
             field.next.nextDraw();
+            return 'dropped';
         }
     }
 
@@ -255,6 +265,13 @@ class Tetromino {
             this.x=this.x+1;
             this.draw();
         }
+    }
+
+    hardDrop () {
+        window.removeEventListener ("keydown", addKeys, true);
+        while (this.moveDown () !== 'dropped') {
+            }
+        addEventListeners ();
     }
 
     rotateClockwise () {
@@ -330,7 +347,11 @@ function addKeys(event) {
         return; // Do nothing if event already handled
     }
     switch(event.code) {
+        case "Space":
+            if (!field.gamePaused) field.tetromino.hardDrop ();
+            break;
         case "KeyW":
+        case "KeyX":
         case "ArrowUp":
             if (!field.gamePaused) field.tetromino.rotateClockwise ();
             break;
@@ -373,7 +394,7 @@ function playTetris() {
             if (field.tetromino.moveDown ()===false) field.gameOver ();
         }
     };
-    main(); // Start the cycle
+    main();
 }
 
 function pauseGame () {
