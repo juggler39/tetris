@@ -1,40 +1,21 @@
 'use strict';
 const GAMEDATA = {
-cols: 10,
-rows: 20,
-colors: ['cyan', 'yellow', 'blue', 'orange', 'green', 'purple', 'red'],     //Standard tetromino colors
-tetromino: [//I, O, J, L, S, T, Z - tetromino shapes
-    [[0, 0, 0, 0],
-     [1, 1, 1, 1],
-     [0, 0, 0, 0],
-     [0, 0, 0, 0]],
+    cols: 10,
+    rows: 20,
+    linesPerLevel: 10,
+    levelLines: 0,
+    maxSpeed: 20,
+    colors: ['cyan', 'yellow', 'blue', 'orange', 'green', 'purple', 'red'],     //Standard tetromino colors
+    tetromino: [//I, O, J, L, S, T, Z - tetromino shapes
+    [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]],
+    [[2, 2], [2, 2]],
+    [[3, 0, 0], [3, 3, 3], [0, 0, 0]],
+    [[0, 0, 4], [4, 4, 4], [0, 0, 0]],
+    [[0, 5, 5], [5, 5, 0], [0, 0, 0]],
+    [[0, 6, 0], [6, 6, 6], [0, 0, 0]],
+    [[7, 7, 0], [0, 7, 7], [0, 0, 0]]],
 
-    [[2, 2],
-     [2, 2]],
-
-    [[3, 0, 0],
-     [3, 3, 3],
-     [0, 0, 0]],
-
-    [[0, 0, 4],
-     [4, 4, 4],
-     [0, 0, 0]],
-
-    [[0, 5, 5],
-     [5, 5, 0],
-     [0, 0, 0]],
-
-    [[0, 6, 0],
-     [6, 6, 6],
-     [0, 0, 0]],
-
-    [[7, 7, 0],
-     [0, 7, 7],
-     [0, 0, 0]]
-
-],
-
-kickData: [
+    kickData: [
     [[0, 0], [-1, 0], [-1, 1], [0, -2], [-1, -2]],
     [[0, 0], [1, 0], [1, -1], [0, 2], [1, 2]],
     [[0, 0], [1, 0], [1, 1], [0, -2], [1, -2]],
@@ -44,7 +25,7 @@ kickData: [
     [[0, 0], [-1, 0], [-1, 1], [0, -2], [-1, -2]],
     [[0, 0], [-1, 0], [-1, -1], [0, 2], [-1, 2]]],
 
-kickDataI: [
+    kickDataI: [
     [[0, 0], [-2, 0], [1, 0], [-2, -1], [1, 2]],
     [[0, 0], [-1, 0], [2, 0], [-1, 2], [2, -1]],
     [[0, 0], [2, 0], [-1, 0], [2, 1], [-1, -2]],
@@ -52,17 +33,49 @@ kickDataI: [
     [[0, 0], [-1, 0], [2, 0], [-1, 2], [2, -1]],
     [[0, 0], [2, 0], [-1, 0], [2, 1], [-1, -2]],
     [[0, 0], [1, 0], [-2, 0], [1, -2], [-2, 1]],
-    [[0, 0], [-2, 0], [1, 0], [-2, -1], [1, 2]]]
+    [[0, 0], [-2, 0], [1, 0], [-2, -1], [1, 2]]],
+
+    points: {
+        single: 100,
+        double: 300,
+        triple: 500,
+        tetris: 800,
+        softDrop: 1,
+        hardDrop: 2
+    },
+
+    level: {
+        0: 800,
+        1: 720,
+        2: 630,
+        3: 550,
+        4: 470,
+        5: 380,
+        6: 300,
+        7: 220,
+        8: 130,
+        9: 100,
+        10: 80,
+        11: 80,
+        12: 80,
+        13: 70,
+        14: 70,
+        15: 70,
+        16: 50,
+        17: 50,
+        18: 50,
+        19: 30,
+        20: 30,
+    },
+
+    accountValues: {
+        score: 0,
+        lines: 0,
+        level: 0,
+    }
 };
 
-const points = {
-    single: 100,
-    double: 300,
-    triple: 500,
-    tetris: 800,
-    softDrop: 1,
-    hardDrop: 2
-};
+
 
 class Field {
 
@@ -116,6 +129,10 @@ class Field {
         document.getElementById('pause').style.display='none';
         document.getElementById('play-button').innerText='Pause';
         document.getElementById('play-button').setAttribute( "onClick", "pauseGame();" );
+        account.score = 0;
+        account.lines = 0;
+        account.level = 0;
+        time.level=1000;
         addEventListeners();
         this.clearField();
         this.tetromino=new Tetromino();
@@ -124,6 +141,7 @@ class Field {
         this.next=new Tetromino;
         this.next.spawn();
         this.next.nextDraw();
+
     }
 
     gameOver () {
@@ -136,13 +154,26 @@ class Field {
     }
 
     clearRows () {
+        let lines=0;
         this.arrField.forEach((row, y) => {
              if (row.every(value => value > 0)) {
                 this.arrField.splice(y, 1);
                 this.arrField.unshift(Array(GAMEDATA.cols).fill(0));
                 this.repaint();
+                lines++;
             }
         });
+            if (lines > 0) {
+                account.lines += lines;
+                GAMEDATA.levelLines += lines;
+                account.score += getLineClearPoints(lines);
+                if (GAMEDATA.levelLines >= GAMEDATA.linesPerLevel) {
+                    account.level++;
+                    GAMEDATA.levelLines -= GAMEDATA.linesPerLevel;
+                    time.level = account.level>20?GAMEDATA.maxSpeed:GAMEDATA.level[account.level];
+                }
+             }
+
     }
 
     freeze () {
@@ -270,6 +301,7 @@ class Tetromino {
     hardDrop () {
         window.removeEventListener ("keydown", addKeys, true);
         while (this.moveDown () !== 'dropped') {
+            account.score+= GAMEDATA.points.hardDrop;
             }
         addEventListeners ();
     }
@@ -334,6 +366,12 @@ class Tetromino {
 
 
 let field = new Field();
+document.addEventListener("visibilitychange", function() {
+    if (document.visibilityState !== 'visible') {
+        pauseGame();
+    }
+});
+
 function addEventListeners () {
     window.addEventListener ("keydown", addKeys, true);
     window.addEventListener("keyup", (event) => {
@@ -377,18 +415,20 @@ function addKeys(event) {
             }
             break;
     }
-    // Consume the event so it doesn't get handled twice
     event.preventDefault();
 }
 
-const time = { start: 0, elapsed: 0, level: 500 };
+const time = { start: 0, elapsed: 0, level: 1000 };
 let requestId=0;
 function playTetris() {
     field.startGame();
     window.main = function (now= 0) {
         requestId = window.requestAnimationFrame( main );
         time.elapsed = now - time.start;
-        if (field.pressedKeys["ArrowDown"]||field.pressedKeys["KeyS"]) time.elapsed+=time.level;
+        if (field.pressedKeys["ArrowDown"]||field.pressedKeys["KeyS"]) {
+            time.elapsed += time.level;
+            account.score+= GAMEDATA.points.softDrop;
+        }
         if (time.elapsed > time.level) {
             time.start = now;
             if (field.tetromino.moveDown ()===false) field.gameOver ();
@@ -412,4 +452,37 @@ function continueGame () {
     document.getElementById('pause').style.display='none';
     document.getElementById('play-button').innerText='Pause';
     document.getElementById('play-button').setAttribute( "onClick", "pauseGame();" );
+}
+
+
+
+function updateAccount(key, value) {
+    let element = document.getElementById(key);
+    if (element) {
+        element.textContent = value;
+    }
+}
+
+let account = new Proxy(GAMEDATA.accountValues, {
+    set: (target, key, value) => {
+        target[key] = value;
+        updateAccount(key, value);
+        return true;
+    }
+});
+
+function getLineClearPoints(lines) {
+    switch (lines) {
+        case 1:
+            return GAMEDATA.points.single;
+        case 2:
+            return GAMEDATA.points.double;
+        case 3:
+            return GAMEDATA.points.triple;
+        case 4:
+            return GAMEDATA.points.tetris;
+        default:
+            return 0;
+    }
+
 }
