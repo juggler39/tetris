@@ -1,4 +1,5 @@
 'use strict';
+
 const GAMEDATA = {
     cols: 10,
     rows: 20,
@@ -141,7 +142,7 @@ class Field {
         this.next=new Tetromino;
         this.next.spawn();
         this.next.nextDraw();
-
+        document.querySelector("audio").play();
     }
 
     gameOver () {
@@ -366,6 +367,7 @@ class Tetromino {
 
 
 let field = new Field();
+
 document.addEventListener("visibilitychange", function() {
     if (document.visibilityState !== 'visible') {
         pauseGame();
