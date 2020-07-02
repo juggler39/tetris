@@ -1,5 +1,30 @@
 * {
     font-family: 'Press Start 2P', cursive;
+    color: black;
+    box-sizing: border-box;
+}
+body {
+    background-image: url('background.jpg');
+    background-color: lightslategray;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: 50% 50%;
+    background-size: cover;
+}
+
+h1 {
+    font-size: 4vmin;
+    text-align: center;
+}
+
+h2 {
+    font-size: 3vmin;
+    text-align: center;
+    margin-top: 3vmin;
+}
+
+p {
+    font-size: 2vmin;
 }
 
 .grid {
@@ -7,6 +32,7 @@
     grid-template-columns: 40vmin 20vmin;
     grid-column-gap: 2vmin;
     justify-content: center;
+    margin-top: 5vmin;
 }
 
 .field {
@@ -25,36 +51,69 @@
     height: 16vmin;
     display: flex;
     flex-wrap: wrap;
+    margin: 1vmin 5vmin;
 }
 
 .next div {
     width: 4vmin;
     height: 4vmin;
+
 }
 
 .empty {
     background-color: lightslategray;
+    border: .1vmin solid #aaa;
 }
+
+
 .colorcyan {
-    background-color: cyan;
+    background: #00ffff;
+    border: .7vmin solid #009999;
+    border-top-color: #b3ffff;
+    border-left-color: #80ffff;
+    border-bottom-color: #004d4d;
 }
 .colorblue {
-    background-color: blue;
+    background: #0000ff;
+    border: .7vmin solid #000099;
+    border-top-color: #b5b5ff;
+    border-left-color: #8282ff;
+    border-bottom-color: #00004d;
 }
 .colororange {
-    background-color: orange;
+    background: #ffa500;
+    border: .7vmin solid #996100;
+    border-top-color: #ffe4b5;
+    border-left-color: #ffd182;
+    border-bottom-color: #4d3000;
 }
 .coloryellow {
-    background-color: yellow;
+    background: #ffff00;
+    border: .7vmin solid #999900;
+    border-top-color: #ffffb5;
+    border-left-color: #ffff82;
+    border-bottom-color: #4d4d00;
 }
 .colorgreen {
-    background-color: green;
+    background: #008000;
+    border: .7vmin solid #009900;
+    border-top-color: #b5ffb5;
+    border-left-color: #82ff82;
+    border-bottom-color: #004d00;
 }
 .colorpurple {
-    background-color: purple;
+    background: #800080;
+    border: .7vmin solid #990099;
+    border-top-color: #ffb5ff;
+    border-left-color: #ff82ff;
+    border-bottom-color: #4d004d;
 }
 .colorred {
-    background-color: red;
+    background: #ff0000;
+    border: .7vmin solid #990000;
+    border-top-color: #ffb5b5;
+    border-left-color: #ff8282;
+    border-bottom-color: #4d0000;
 }
 
 
@@ -62,13 +121,19 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    background-color: white;
+    padding: 2vmin;
+    width: 30vmin;
 }
 
 #play-button {
     background-color: #4caf50;
+    width: 20vmin;
+    height: 5vmin;
     font-size: 1.6vmin;
     padding: 1.5vmin 3vmin;
     cursor: pointer;
+    margin: 3vmin;
 }
 
 #pause {

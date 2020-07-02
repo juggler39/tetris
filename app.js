@@ -258,7 +258,7 @@ class Tetromino {
         this.shape.forEach((row, y) => {
             row.forEach((value, x) => {
                  if (value > 0) {
-                    document.getElementById(`nextx${x}y${y}`)
+                    document.getElementById(`nextx${this.piece===1?x+1:x}y${y}`)
                         .setAttribute("class", `cellnext color${GAMEDATA.colors[this.piece]}`);
                 }
             });
